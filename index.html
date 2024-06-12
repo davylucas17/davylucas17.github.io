@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário simples</title>
+    <style>
+      body {
+        border-top-style: dotted;
+        border-right-style: solid;
+        border-bottom-style: dotted;
+        border-left-style: solid;
+      }
+      p {
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="" id="id_formulario" name="formulario">
+      <br />
+      <legend>Formulário</legend>
+      <br />
+      <div>
+        <label id="id_name"
+          >Nome Completo:
+          <input
+            type="text"
+            name="nome"
+            value=""
+            id="id_name"
+            placeholder="Digite seu nome"
+          />
+        </label>
+      </div>
+      <div>
+        <label form="id_data"
+          >Data de Nascimento: <input type="date" name="data" id="id_data" />
+        </label>
+      </div>
+      <div>
+        <p>Vagas disponíveis</p>
+        <label id="id_frontend">Dev Front-end JR</label>
+        <input
+          type="radio"
+          name="radio"
+          value="Dev Front-end JR"
+          id="id_frontend"
+        />
+        <label id="id_designer">Designer UI/UX</label>
+        <input
+          type="radio"
+          name="radio"
+          value=" Designer UI/UX"
+          id="id_designer"
+        />
+      </div>
+
+      <div>
+        <p>Habilidades</p>
+        <label id="id_html5">HTML5</label>
+        <input type="checkbox" name="check" value="html5" id="id_html5" />
+        <label id="id_javascript">Javascript</label>
+        <input
+          type="checkbox"
+          name="check"
+          value="javascript"
+          id="id_javascript"
+        />
+        <label id="id_css">CSS</label>
+        <input type="checkbox" name="check" value="css" id="id_css" />
+      </div>
+      <div>
+        <label id="id_curso"
+          >Curso: <textarea name="curso_textarea" id="id_textarea"></textarea>
+        </label>
+      </div>
+      <div>
+        <button type="submit" value="enviar" id="id_enviar">Enviar</button>
+      </div>
+    </form>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBQd47De-OO0UGq64_QLtE8ZTHsenN_Uf4",
+        authDomain: "teste3-53aa9.firebaseapp.com",
+        projectId: "teste3-53aa9",
+        storageBucket: "teste3-53aa9.appspot.com",
+        messagingSenderId: "390907963129",
+        appId: "1:390907963129:web:4985bac7af8f440a29e428",
+        measurementId: "G-G7CDBZB7XS",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase();
+
+      let form = document.getElementById("id_formulario");
+      form.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+
+        let nome = form.nome.value;
+        let vaga = form.radio.value;
+        let curso = form.curso_textarea.value;
+        let data = form.data.value;
+
+        let checks = document.querySelectorAll('[type="checkbox"]:checked');
+        let vetor_habilidades = [];
+        checks.forEach((checkbox) => {
+          vetor_habilidades.push(checkbox.value);
+        });
+
+        alert(
+          `Dados enviados com sucesso!\nNome: ${nome} \nData de nascimento: ${data} \nVaga: ${vaga}\nHabilidades: ${vetor_habilidades.join(
+            ", "
+          )} \nCurso: ${curso}`
+        );
+        console.log(
+          `Nome: ${nome} \n Data de nascimento: ${data} \nVaga: ${vaga} \nHabilidades: ${vetor_habilidades.join(
+            ", "
+          )} \nCurso: ${curso} 
+        `
+        );
+
+        const usersRef = ref(database, "users");
+        push(usersRef, {
+          nome: nome,
+          data: data,
+          vaga: vaga,
+          habilidades: vetor_habilidades,
+          curso: curso,
+        })
+          .then(() => {
+            console.log("Dados enviados com sucesso!");
+          })
+          .catch((error) => {
+            console.error("Erro ao enviar dados:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
+<!-- é o Davy paizão -->
